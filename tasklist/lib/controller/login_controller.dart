@@ -69,4 +69,35 @@ class LoginController {
       }
     });
   }
+
+
+  //
+  // LOGOUT
+  //
+  void logout() {
+    FirebaseAuth.instance.signOut();
+  }
+
+  //
+  // RETORNAR USUÁRIO LOGADO
+  //
+  Future<String> retornarUsuarioLogado() async {
+    var uid = FirebaseAuth.instance.currentUser!.uid;
+    var res;
+    await FirebaseFirestore.instance
+        .collection('usuarios')
+        .where('uid', isEqualTo: uid)
+        .get()
+        .then(
+      (q) {
+        if (q.docs.isNotEmpty) {
+          res = q.docs[0].data()['nome'];
+        } else {
+          res = "";
+        }
+      },
+    );
+    return res;
+  }
+
 }
